@@ -35,7 +35,7 @@ Condizione: specificare in base al prodotto effettivamente venduto.</textarea>
 </section>
 <section class="card">
 <div class="split"><h2>3 · Foto del prodotto</h2><span class="pill" id="photoCount">0 immagini</span></div>
-<p class="muted">L'app prova a leggere le immagini Open Graph/metadata tramite un servizio esterno gratuito. Questo servizio può avere limiti e Amazon può bloccare il recupero. Se non funziona, apri Amazon e usa le immagini ufficiali solo se hai diritto di riutilizzarle.</p>
+<p class="muted">L'app prova più fonti gratuite per leggere i metadati e trovare URL immagine. Questi servizi possono avere limiti e Amazon può bloccare il recupero. Se non funziona, apri Amazon e usa le immagini ufficiali solo se hai diritto di riutilizzarle.</p>
 <div class="row"><button class="secondary" id="getImages">Cerca immagini</button><button class="secondary" id="clearImages">Svuota</button></div>
 <div id="photos" class="photo-grid"></div>
 <div class="status" id="photoStatus">Nessuna immagine recuperata.</div>
@@ -60,24 +60,61 @@ document.querySelectorAll("[data-copy]").forEach(b=>b.onclick=async()=>{const el
 function renderImages(urls){const grid=$("photos");grid.innerHTML="";urls=[...new Set(urls)].slice(0,20);$("photoCount").textContent=urls.length+" immagini";urls.forEach((url,i)=>{const card=document.createElement("div");card.className="photo";const img=document.createElement("img");img.loading="lazy";img.referrerPolicy="no-referrer";img.src=url;img.alt="Immagine prodotto "+(i+1);img.onerror=()=>{img.alt="Immagine non caricabile";};const pad=document.createElement("div");pad.className="pad";const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener";a.textContent="Apri immagine "+(i+1);pad.appendChild(a);card.appendChild(img);card.appendChild(pad);grid.appendChild(card)});return urls.length}
 $("clearImages").onclick=()=>{ $("photos").innerHTML="";$("photoCount").textContent="0 immagini";$("photoStatus").textContent="Nessuna immagine recuperata."};
 $("getImages").onclick=async()=>{
- const url=$("url").value.trim();if(!validAmazon(url)){$("photoStatus").textContent="Inserisci un URL valido di Amazon.it.";return}
- const asin=asinFrom(url);const btn=$("getImages");btn.disabled=true;btn.textContent="Ricerca in corso…";
- $("photoStatus").textContent="Tentativo di recupero metadati. Il servizio esterno può non supportare Amazon o richiedere limiti/chiave.";
- let got=[];
+ const url=$("url").value.trim();
+ if(!validAmazon(url)){$("photoStatus").textContent="Inserisci un URL valido di Amazon.it.";return}
+ const btn=$("getImages");btn.disabled=true;btn.textContent="Ricerca in corso…";
+ $("photoStatus").textContent="Provo più fonti gratuite. Amazon può bloccare l'accesso automatico.";
+ let got=[],errors=[];
+ const timedFetch=async(u,ms=16000)=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);try{return await fetch(u,{signal:c.signal})}finally{clearTimeout(t)}};
+ const addImage=(raw)=>{
+   if(!raw||typeof raw!=="string")return;
+   let u=raw.replace(/&amp;/g,"&").replace(/\\u002F/g,"/").replace(/\\\//g,"/").replace(/\\u003D/g,"=");
+   if(u.startsWith("//"))u="https:"+u;
+   if(/^https?:\/\//i.test(u)&&(/m\.media-amazon\.com|images-na\.ssl-images-amazon\.com|images\.amazon\.com|\.jpe?g(?:[?#]|$)|\.png(?:[?#]|$)|\.webp(?:[?#]|$)/i.test(u)))got.push(u);
+ };
+ const parsePage=(txt)=>{
+   const patterns=[
+     /"hiRes"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/g,
+     /"large"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/g,
+     /"landingImage"\s*:\s*"([^"\\]*(?:\\.[^"\\]*)*)"/g,
+     /https?:\\?\/\\?\/m\.media-amazon\.com\\?\/images\\?\/I\\?\/[^"'\s<>\\]+/g,
+     /https?:\/\/m\.media-amazon\.com\/images\/I\/[^"'\s<>\\)]+/g,
+     /https?:\/\/images-na\.ssl-images-amazon\.com\/images\/I\/[^"'\s<>\\)]+/g,
+     /!\[[^\]]*\]\((https?:\/\/[^)]+)\)/g
+   ];
+   for(const re of patterns){let m;while((m=re.exec(txt))!==null)addImage((m[1]||m[0]).replace(/\\\//g,"/").replace(/\\u002F/g,"/"));}
+   try{
+     const doc=new DOMParser().parseFromString(txt,"text/html");
+     doc.querySelectorAll('meta[property="og:image"],meta[name="twitter:image"],img#landingImage,img[data-old-hires],img[src*="m.media-amazon.com"],img[src*="images-na.ssl-images-amazon.com"]').forEach(el=>{
+       addImage(el.content||el.getAttribute("data-old-hires")||el.getAttribute("src"));
+       const dyn=el.getAttribute("data-a-dynamic-image");if(dyn){try{Object.keys(JSON.parse(dyn)).forEach(addImage)}catch{}}
+     });
+     doc.querySelectorAll('script[type="application/ld+json"]').forEach(el=>{try{const j=JSON.parse(el.textContent),arr=Array.isArray(j)?j:[j];arr.forEach(x=>{const im=x.image;if(typeof im==="string")addImage(im);else if(Array.isArray(im))im.forEach(y=>addImage(typeof y==="string"?y:y.url));else if(im&&im.url)addImage(im.url)})}catch{}});
+   }catch{}
+ };
  try{
-  // Public metadata endpoint; free access/limits can change. Never imply Amazon access is guaranteed.
-  const endpoint="https://api.microlink.io/?url="+encodeURIComponent(url)+"&data.image=true&data.logo=false&data.title=true";
-  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),18000);
-  const res=await fetch(endpoint,{signal:controller.signal});clearTimeout(timer);
-  if(!res.ok)throw new Error("Servizio metadata non disponibile (HTTP "+res.status+")");
-  const j=await res.json();const d=j.data||{};
-  if(d.image&&d.image.url)got.push(d.image.url);
-  if(Array.isArray(d.images))got.push(...d.images.map(x=>typeof x==="string"?x:x.url).filter(Boolean));
-  if(got.length){renderImages(got);$("photoStatus").textContent=`Recuperate ${new Set(got).size} immagini dai metadati disponibili. Non è garantito che siano tutte le foto della galleria Amazon.`; }
-  else throw new Error("Il servizio non ha restituito immagini per questo link.");
- }catch(e){
-   $("photoStatus").textContent="Recupero automatico non riuscito: "+(e.name==="AbortError"?"timeout":e.message)+". Amazon può bloccare richieste esterne e il servizio gratuito può avere limiti. Nessuna immagine è stata scaricata.";
- }
- finally{btn.disabled=false;btn.textContent="Cerca immagini"}
+   // Try free metadata API first.
+   try{
+     const r=await timedFetch("https://api.microlink.io/?url="+encodeURIComponent(url)+"&data.image=true&data.images=true&data.title=true",16000);
+     if(r.ok){const j=await r.json(),d=j.data||{};if(d.image)addImage(d.image.url||d.image);if(Array.isArray(d.images))d.images.forEach(x=>addImage(typeof x==="string"?x:x.url));}
+     else errors.push("metadata HTTP "+r.status);
+   }catch(e){errors.push("metadata "+(e.name==="AbortError"?"timeout":e.message));}
+   // If metadata failed, try a text reader proxy and parse image URLs from the returned page text.
+   if(!got.length){
+     try{const proxy="https://r.jina.ai/http://"+url.replace(/^https?:\/\//i,"");const r=await timedFetch(proxy,18000);if(r.ok)parsePage(await r.text());else errors.push("reader HTTP "+r.status);}
+     catch(e){errors.push("reader "+(e.name==="AbortError"?"timeout":e.message));}
+   }
+   if(!got.length){
+     try{const proxy="https://api.allorigins.win/raw?url="+encodeURIComponent(url);const r=await timedFetch(proxy,18000);if(r.ok)parsePage(await r.text());else errors.push("proxy HTTP "+r.status);}
+     catch(e){errors.push("proxy "+(e.name==="AbortError"?"timeout":e.message));}
+   }
+   got=[...new Set(got)].slice(0,20);
+   if(got.length){
+     renderImages(got);
+     $("photoStatus").textContent="Trovate "+got.length+" immagini/URL. Controlla le miniature: Amazon può fornire URL non accessibili o solo l'immagine principale. Tocca 'Apri immagine' per salvarla su iPhone.";
+   }else{
+     $("photoStatus").textContent="Nessuna immagine recuperata. I servizi gratuiti non sono riusciti ad accedere alla pagina Amazon. Dettagli: "+(errors.join(" | ")||"nessun URL immagine nei metadati")+". Questo non significa che il link sia errato: Amazon può bloccare richieste automatiche.";
+   }
+ }finally{btn.disabled=false;btn.textContent="Cerca immagini"}
 };
 </script></body></html>
