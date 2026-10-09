@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101827"><title>Amazon → eBay Listing Assistant</title>
+<style>
+:root{color-scheme:dark;--card:#151d31;--muted:#9aa8c2;--text:#f5f7ff;--accent:#a9b5ff;--line:#2b3650}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#101a34,#090d18 65%);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:760px;margin:auto;padding:18px 14px 42px}.hero{padding:15px 4px 18px}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#aab6ff;font-weight:800}.hero h1{font-size:30px;line-height:1.08;margin:8px 0}.hero p,.muted{color:var(--muted);line-height:1.5}.muted{font-size:13px}.card{background:rgba(21,29,49,.96);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 12px 35px #0002}label{display:block;font-size:13px;font-weight:700;color:#dce3f5;margin:12px 0 7px}input,textarea,select{width:100%;border:1px solid #394766;border-radius:11px;background:#0d1425;color:var(--text);font:inherit;padding:12px;outline:none}textarea{min-height:100px;line-height:1.45}button,.btn{border:0;border-radius:11px;padding:12px 14px;font:700 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;text-align:center;text-decoration:none;display:inline-flex;justify-content:center;align-items:center;gap:7px}button:disabled{opacity:.55}.primary{background:var(--accent);color:#10162a;width:100%;margin-top:10px}.secondary{background:#263451;color:#f3f5ff}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.row>*{flex:1;min-width:120px}.status{padding:11px;border-radius:11px;background:#0d1425;border:1px solid var(--line);font-size:13px;line-height:1.45;margin-top:11px;overflow-wrap:anywhere}.warn{border-color:#80652e}.ok{border-color:#2d7965}.split{display:flex;justify-content:space-between;align-items:center;gap:10px}.pill{padding:5px 8px;background:#263451;border-radius:999px;color:#d9e0ff;font-size:12px;white-space:nowrap}h2{font-size:18px;margin:0 0 8px}.photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.photo{background:#0d1425;border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}.photo img{width:100%;aspect-ratio:1;object-fit:contain;background:white;display:block}.pad{padding:9px}.filename{font-size:12px;overflow-wrap:anywhere;color:var(--muted);margin-bottom:7px}.file-label{display:flex;align-items:center;justify-content:center;background:#263451;border-radius:11px;padding:12px 14px;font-weight:700;font-size:14px;cursor:pointer;margin-top:9px}.file-input{position:absolute;width:1px;height:1px;opacity:0}.foot{font-size:12px;color:#7f8ba5;text-align:center;margin-top:22px}.notice{border-left:3px solid #8b9cff;padding:9px 11px;background:#10182b;border-radius:6px;font-size:13px;line-height:1.45;color:#cbd5ee}
+</style></head><body><main>
+<header class="hero"><div class="eyebrow">Free tool · iPhone friendly · No API</div><h1>Amazon → eBay<br>Listing Assistant</h1><p>Prepare Italian eBay listing copy and search for product photos without an API key.</p></header>
+<section class="card">
+<h2>1 · Product details</h2>
+<label for="url">Amazon.it product URL</label><input id="url" type="url" value="https://www.amazon.it/Fidia-Farmaceutici-ConnettivinaStick-Lips-Hyaluronic/dp/B0DFHQTDL2/" placeholder="https://www.amazon.it/dp/...">
+<div class="row"><button class="secondary" id="openAmazon" type="button">Open Amazon</button><button class="secondary" id="analyze" type="button">Recognize link</button></div>
+<label for="brand">Brand</label><input id="brand" value="Fidia Farmaceutici">
+<label for="productName">Exact product name</label><input id="productName" value="ConnettivinaStick Labbra">
+<div class="row"><div><label for="size">Size / quantity</label><input id="size" value="3 g"></div><div><label for="condition">Condition</label><select id="condition"><option>New</option><option>Used</option><option>To be verified</option></select></div></div>
+<label for="features">Verified product features</label><input id="features" value="Acido ialuronico 0,2%">
+<label for="keywords">Relevant search keywords (optional)</label><input id="keywords" placeholder="stick labbra, cura labbra">
+<button class="primary" id="generate" type="button">Generate Italian SEO listing</button>
+<div class="status warn" id="status">This no-API version recognizes the ASIN from an Amazon URL. It does not claim to have scraped or verified Amazon product details.</div>
+</section>
+<section class="card">
+<div class="split"><h2>2 · eBay.it listing</h2><span class="pill" id="count">0/80</span></div>
+<label for="title">Title (maximum 80 characters)</label><textarea id="title" maxlength="80">ConnettivinaStick Labbra Fidia 3 g Acido Ialuronico 0,2% Stick Labbra</textarea>
+<div class="row"><button class="secondary" data-copy="title" type="button">Copy title</button><button class="secondary" id="regen" type="button">Regenerate SEO title</button></div>
+<label for="description">Description (Italian)</label><textarea id="description">ConnettivinaStick Labbra di Fidia Farmaceutici.
+
+Formato: 3 g.
+Caratteristiche: verificare sulla confezione.
+Condizione: confermare prima della pubblicazione.
+
+Controlla che tutte le informazioni corrispondano al prodotto venduto.</textarea>
+<button class="secondary" data-copy="description" type="button" style="width:100%;margin-top:9px">Copy description</button>
+<p class="muted">The interface is English; generated listing copy is Italian for eBay.it. SEO can improve relevance but cannot guarantee first place. Verify all product claims.</p>
+</section>
+<section class="card">
+<div class="split"><h2>3 · Product photos</h2><span class="pill" id="photoCount">0 photos</span></div>
+<p class="muted">No API key is used. Search engines open in a new tab with your product query. Because browsers block scraping other sites and search results pages, images cannot be reliably imported directly from Google/Bing into this page without an API or backend.</p>
+<button class="primary" id="autoSearch" type="button">Search Google + Bing Images</button>
+<div class="row"><button class="secondary" id="googleSearch" type="button">Google Images</button><button class="secondary" id="bingSearch" type="button">Bing Images</button></div>
+<label class="file-label" for="files">＋ Choose photos from iPhone</label><input class="file-input" id="files" type="file" accept="image/*" multiple>
+<label for="imageUrl">Or add a direct image URL</label><input id="imageUrl" type="url" placeholder="https://.../image.jpg">
+<button class="secondary" id="addUrl" type="button" style="width:100%;margin-top:8px">Add image URL</button>
+<div id="photos" class="photo-grid"></div><div class="status" id="photoStatus">No photos added yet.</div>
+</section>
+<section class="card"><h2>How to use photo search</h2><ol class="muted" style="padding-left:20px;line-height:1.7"><li>Tap “Search Google + Bing Images”. Both searches open in new tabs.</li><li>Check the exact brand, product name and size before using an image.</li><li>Save a permitted image to Photos, then use “Choose photos from iPhone” to preview it here.</li><li>Alternatively, add a direct image URL. Some image hosts block previews.</li></ol><div class="notice">This version is fully static: no API key, no server, and no automatic Amazon scraping. It does not publish to eBay. Only reuse images you have permission to use.</div></section>
+<p class="foot">No-API prototype · Not connected to eBay · No automatic publishing</p>
+</main>
+<script>
+const $=id=>document.getElementById(id);let items=[];
+function clean(s){return(s||"").replace(/\s+/g," ").trim()}
+function validAmazon(s){try{let u=new URL(s);return /^https?:$/.test(u.protocol)&&/(^|\.)amazon\.it$/i.test(u.hostname)}catch{return false}}
+function asin(s){try{let u=new URL(s),m=u.pathname.match(/\/(?:dp|gp\/product|product)\/([A-Z0-9]{10})/i);return /(^|\.)amazon\.it$/i.test(u.hostname)&&m?m[1].toUpperCase():""}catch{return""}}
+function query(){return [clean($("brand").value),clean($("productName").value),clean($("size").value)].filter(Boolean).join(" ")}
+function updateCount(){$("count").textContent=$("title").value.length+"/80"}
+function titleText(){let parts=[clean($("productName").value),clean($("brand").value),clean($("size").value),clean($("features").value),clean($("keywords").value)].filter(Boolean),out="";for(const p of parts){let n=out?out+" "+p:p;if(n.length<=80)out=n}return out||"Prodotto da verificare"}
+$("openAmazon").onclick=()=>{let u=$("url").value.trim();if(!validAmazon(u)){$("status").textContent="Enter a valid Amazon.it URL.";return}window.open(u,"_blank","noopener,noreferrer")};
+$("analyze").onclick=()=>{let u=$("url").value.trim();if(!validAmazon(u)){$("status").textContent="Invalid Amazon.it URL.";return}let a=asin(u);$("status").textContent=a?"Link recognized · ASIN "+a+". Product details are not automatically verified.":"Amazon.it domain recognized, but no standard ASIN was found. Enter product details manually."};
+$("generate").onclick=()=>{let brand=clean($("brand").value),name=clean($("productName").value),size=clean($("size").value),features=clean($("features").value),condition=$("condition").value,kw=clean($("keywords").value);$("title").value=titleText().slice(0,80);$("description").value=[name+(brand?" di "+brand:""),"","CARATTERISTICHE",size?"• Formato: "+size:"",brand?"• Marca: "+brand:"",features?"• "+features+" (verificare sulla confezione)":"",kw?"• Parole chiave pertinenti: "+kw:"","","CONDIZIONE",condition==="To be verified"?"Da specificare prima della pubblicazione.":condition==="New"?"Nuovo (confermare che corrisponda al prodotto venduto).":"Usato (descrivere con precisione le condizioni).","","CONTENUTO DELLA CONFEZIONE","Specificare quantità e contenuto esatti in base alla confezione.","","Verifica tutte le informazioni prima di pubblicare."].filter(x=>x!==null).join("\n");updateCount();$("status").textContent="Italian listing draft generated from the fields you entered. Verify details before publishing."};
+$("regen").onclick=()=>{$("title").value=titleText().slice(0,80);updateCount()};$("title").oninput=updateCount;updateCount();
+document.querySelectorAll("[data-copy]").forEach(b=>b.onclick=async()=>{let el=$(b.dataset.copy);try{await navigator.clipboard.writeText(el.value);let old=b.textContent;b.textContent="Copied ✓";setTimeout(()=>b.textContent=old,1200)}catch{el.focus();el.select();b.textContent=document.execCommand("copy")?"Copied ✓":"Text selected"}});
+function render(){let grid=$("photos");grid.innerHTML="";items.forEach((x,i)=>{let card=document.createElement("div");card.className="photo";let img=document.createElement("img");img.src=x.src;img.alt=x.title||"Product image";img.onerror=()=>{img.alt="Preview unavailable"};let pad=document.createElement("div");pad.className="pad";let name=document.createElement("div");name.className="filename";name.textContent=x.title||("Image "+(i+1));let row=document.createElement("div");row.className="row";let remove=document.createElement("button");remove.className="secondary";remove.textContent="Remove";remove.onclick=()=>{let gone=items.splice(i,1)[0];if(gone.local)URL.revokeObjectURL(gone.src);render()};row.append(remove);pad.append(name,row);card.append(img,pad);grid.append(card)});$("photoCount").textContent=items.length+" photos"}
+function openSearch(engine){let q=query();if(!q){$("photoStatus").textContent="Enter a brand or product name first.";return}let url=engine==="google"?"https://www.google.com/search?tbm=isch&q="+encodeURIComponent(q):"https://www.bing.com/images/search?q="+encodeURIComponent(q);window.open(url,"_blank","noopener,noreferrer")}
+$("googleSearch").onclick=()=>openSearch("google");$("bingSearch").onclick=()=>openSearch("bing");$("autoSearch").onclick=()=>{openSearch("google");openSearch("bing");$("photoStatus").textContent="Opened Google Images and Bing Images in new tabs. Select a permitted image, save it to your iPhone, then add it below."};
+$("files").onchange=e=>{Array.from(e.target.files||[]).forEach(f=>{if(f.type.startsWith("image/"))items.push({src:URL.createObjectURL(f),title:f.name,local:true})});render();$("photoStatus").textContent="Photos added from your device. They remain available while this page stays open.";e.target.value=""};
+$("addUrl").onclick=()=>{try{let u=new URL($("imageUrl").value.trim());if(!/^https?:$/.test(u.protocol))throw Error();items.push({src:u.href,title:u.pathname.split("/").pop()||"Image URL",local:false});render();$("imageUrl").value="";$("photoStatus").textContent="Image URL added. The host may block preview loading."}catch{$("photoStatus").textContent="Enter a valid direct http/https image URL."}};
+</script></body></html>
