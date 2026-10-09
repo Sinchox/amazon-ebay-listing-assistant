@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827"><title>Listing Assistant</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--card:#151d31;--muted:#9aa8c2;--text:#f5f7ff;--accent:#8b9cff;--line:#2b3650}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#101a34,#090d18 65%);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:760px;margin:auto;padding:20px 15px 48px}.hero{padding:18px 4px 20px}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#aab6ff;font-weight:800}.hero h1{font-size:30px;line-height:1.08;margin:8px 0}.hero p{color:var(--muted);margin:0;line-height:1.45}
+.card{background:rgba(21,29,49,.95);border:1px solid var(--line);border-radius:20px;padding:17px;margin:12px 0;box-shadow:0 12px 35px #0002}
+label{display:block;font-size:13px;font-weight:700;color:#dce3f5;margin:12px 0 7px}input,textarea,select{width:100%;border:1px solid #394766;border-radius:12px;background:#0d1425;color:var(--text);font:inherit;padding:13px;outline:none}textarea{min-height:120px;resize:vertical;line-height:1.45}button,.btn{border:0;border-radius:12px;padding:13px 15px;font:700 15px inherit;cursor:pointer;text-align:center;text-decoration:none;display:inline-flex;justify-content:center;align-items:center;gap:7px}
+.primary{background:#a9b5ff;color:#10162a;width:100%;margin-top:12px}.secondary{background:#263451;color:#f3f5ff}.small{font-size:13px;padding:10px}.row{display:flex;gap:9px;flex-wrap:wrap}.row>*{flex:1}.muted{color:var(--muted);font-size:13px;line-height:1.45}.status{padding:12px;border-radius:12px;background:#0d1425;border:1px solid var(--line);font-size:13px;line-height:1.45;margin-top:12px}.status.warn{border-color:#745d2b}.status.ok{border-color:#316b5c}.hidden{display:none}.photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}.photo{background:#0d1425;border:1px solid var(--line);border-radius:12px;overflow:hidden}.photo img{width:100%;aspect-ratio:1;object-fit:contain;background:white}.photo .pad{padding:9px}.photo a{font-size:12px;color:#c3ccff;overflow-wrap:anywhere}.pill{display:inline-block;padding:5px 8px;background:#263451;border-radius:999px;color:#d9e0ff;font-size:12px}
+h2{font-size:18px;margin:0 0 8px}.split{display:flex;justify-content:space-between;align-items:center;gap:10px}.foot{font-size:12px;color:#7f8ba5;text-align:center;margin-top:24px}
+</style></head>
+<body><main>
+<header class="hero"><div class="eyebrow">Free iPhone web tool</div><h1>Amazon → eBay<br>Listing Assistant</h1><p>Incolla un link Amazon.it, prepara titolo e descrizione e raccogli le immagini del prodotto.</p></header>
+<section class="card">
+<h2>1 · Link del prodotto</h2>
+<label for="url">URL Amazon.it</label>
+<input id="url" type="url" autocomplete="url" placeholder="https://www.amazon.it/dp/..." value="https://www.amazon.it/Fidia-Farmaceutici-ConnettivinaStick-Lips-Hyaluronic/dp/B0DFHQTDL2/">
+<div class="row"><button class="secondary" id="openAmazon">Apri Amazon</button><button class="primary" id="analyze" style="width:auto;flex:2;margin-top:0">Analizza link</button></div>
+<div class="status warn" id="status">Nota: Amazon spesso blocca il recupero automatico da strumenti esterni. Questa versione verifica il link e prova a recuperare i metadati; non dichiara successo se Amazon impedisce l'accesso.</div>
+</section>
+<section class="card">
+<div class="split"><h2>2 · Titolo e descrizione</h2><span class="pill">Italiano</span></div>
+<label for="title">Titolo eBay</label><textarea id="title">Fidia Farmaceutici ConnettivinaStick Labbra 3g Acido Ialuronico 0,2%</textarea>
+<div class="row"><button class="secondary" data-copy="title">Copia titolo</button><button class="secondary" id="makeTitle">Crea titolo dai dati</button></div>
+<label for="description">Descrizione</label><textarea id="description">ConnettivinaStick Labbra di Fidia Farmaceutici è uno stick labbra da 3 g con acido ialuronico sale sodico allo 0,2%. È indicato per idratare le labbra secche e screpolate e favorire il ripristino della barriera cutanea labiale.
+
+Formato: stick da 3 g.
+Marca: Fidia Farmaceutici.
+Condizione: specificare in base al prodotto effettivamente venduto.</textarea>
+<button class="secondary" data-copy="description" style="width:100%;margin-top:9px">Copia descrizione</button>
+<p class="muted">Il testo iniziale è preparato usando informazioni pubbliche del produttore, non è stato estratto automaticamente da Amazon. Controlla sempre confezione, condizioni e conformità dell'annuncio.</p>
+</section>
+<section class="card">
+<div class="split"><h2>3 · Foto del prodotto</h2><span class="pill" id="photoCount">0 immagini</span></div>
+<p class="muted">L'app prova a leggere le immagini Open Graph/metadata tramite un servizio esterno gratuito. Questo servizio può avere limiti e Amazon può bloccare il recupero. Se non funziona, apri Amazon e usa le immagini ufficiali solo se hai diritto di riutilizzarle.</p>
+<div class="row"><button class="secondary" id="getImages">Cerca immagini</button><button class="secondary" id="clearImages">Svuota</button></div>
+<div id="photos" class="photo-grid"></div>
+<div class="status" id="photoStatus">Nessuna immagine recuperata.</div>
+</section>
+<section class="card">
+<h2>Come salvare su iPhone</h2>
+<ol class="muted" style="padding-left:20px;line-height:1.7">
+<li>Tocca “Cerca immagini”.</li><li>Se le miniature appaiono, tocca “Apri immagine”.</li><li>Nella schermata dell'immagine, tieni premuto e scegli “Salva in Foto” se Safari offre l'opzione.</li><li>Se Amazon blocca il recupero, apri la pagina del prodotto e salva manualmente le immagini consentite.</li>
+</ol>
+</section>
+<p class="foot">Prototipo locale · Non collegato al tuo account eBay · Nessuna pubblicazione automatica</p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function asinFrom(url){try{let u=new URL(url);let m=u.pathname.match(/\/(?:dp|gp\/product|product)\/([A-Z0-9]{10})/i);return m?m[1]:""}catch(e){return""}}
+function validAmazon(url){try{let u=new URL(url);return /(^|\.)amazon\.it$/i.test(u.hostname)}catch(e){return false}}
+function setStatus(msg,kind=""){const el=$("status");el.textContent=msg;el.className="status "+kind}
+$("openAmazon").onclick=()=>{const u=$("url").value.trim();if(!validAmazon(u)){setStatus("Inserisci un URL valido di Amazon.it.","warn");return}window.open(u,"_blank","noopener");};
+$("analyze").onclick=()=>{let u=$("url").value.trim();if(!validAmazon(u)){setStatus("Inserisci un URL valido di Amazon.it.","warn");return}let asin=asinFrom(u);setStatus(asin?`Link riconosciuto. ASIN: ${asin}. Il recupero completo dei dati Amazon può essere bloccato dal sito.`:"Link Amazon riconosciuto, ma non è stato trovato un ASIN standard. Puoi comunque aprire il prodotto.","ok");};
+$("makeTitle").onclick=()=>{const t=$("title").value.trim();if(!t){$("title").value="Prodotto Amazon - verificare marca e modello";return}let cleaned=t.replace(/\s+/g," ").slice(0,80);$("title").value=cleaned;};
+document.querySelectorAll("[data-copy]").forEach(b=>b.onclick=async()=>{const el=$(b.dataset.copy);try{await navigator.clipboard.writeText(el.value);b.textContent="Copiato ✓";setTimeout(()=>b.textContent=b.dataset.copy==="title"?"Copia titolo":"Copia descrizione",1500)}catch(e){el.focus();el.select();document.execCommand("copy");b.textContent="Selezionato / copiato"}});
+function renderImages(urls){const grid=$("photos");grid.innerHTML="";urls=[...new Set(urls)].slice(0,20);$("photoCount").textContent=urls.length+" immagini";urls.forEach((url,i)=>{const card=document.createElement("div");card.className="photo";const img=document.createElement("img");img.loading="lazy";img.referrerPolicy="no-referrer";img.src=url;img.alt="Immagine prodotto "+(i+1);img.onerror=()=>{img.alt="Immagine non caricabile";};const pad=document.createElement("div");pad.className="pad";const a=document.createElement("a");a.href=url;a.target="_blank";a.rel="noopener";a.textContent="Apri immagine "+(i+1);pad.appendChild(a);card.appendChild(img);card.appendChild(pad);grid.appendChild(card)});return urls.length}
+$("clearImages").onclick=()=>{ $("photos").innerHTML="";$("photoCount").textContent="0 immagini";$("photoStatus").textContent="Nessuna immagine recuperata."};
+$("getImages").onclick=async()=>{
+ const url=$("url").value.trim();if(!validAmazon(url)){$("photoStatus").textContent="Inserisci un URL valido di Amazon.it.";return}
+ const asin=asinFrom(url);const btn=$("getImages");btn.disabled=true;btn.textContent="Ricerca in corso…";
+ $("photoStatus").textContent="Tentativo di recupero metadati. Il servizio esterno può non supportare Amazon o richiedere limiti/chiave.";
+ let got=[];
+ try{
+  // Public metadata endpoint; free access/limits can change. Never imply Amazon access is guaranteed.
+  const endpoint="https://api.microlink.io/?url="+encodeURIComponent(url)+"&data.image=true&data.logo=false&data.title=true";
+  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),18000);
+  const res=await fetch(endpoint,{signal:controller.signal});clearTimeout(timer);
+  if(!res.ok)throw new Error("Servizio metadata non disponibile (HTTP "+res.status+")");
+  const j=await res.json();const d=j.data||{};
+  if(d.image&&d.image.url)got.push(d.image.url);
+  if(Array.isArray(d.images))got.push(...d.images.map(x=>typeof x==="string"?x:x.url).filter(Boolean));
+  if(got.length){renderImages(got);$("photoStatus").textContent=`Recuperate ${new Set(got).size} immagini dai metadati disponibili. Non è garantito che siano tutte le foto della galleria Amazon.`; }
+  else throw new Error("Il servizio non ha restituito immagini per questo link.");
+ }catch(e){
+   $("photoStatus").textContent="Recupero automatico non riuscito: "+(e.name==="AbortError"?"timeout":e.message)+". Amazon può bloccare richieste esterne e il servizio gratuito può avere limiti. Nessuna immagine è stata scaricata.";
+ }
+ finally{btn.disabled=false;btn.textContent="Cerca immagini"}
+};
+</script></body></html>
