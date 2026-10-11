@@ -1,24 +1,62 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101827"><title>Amazon to eBay Listing Assistant</title>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Sincho HTML Inspector</title>
 <style>
-:root{color-scheme:dark;--card:#151d31;--muted:#9aa8c2;--text:#f5f7ff;--accent:#a9b5ff;--line:#2b3650}*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#101a34,#090d18 65%);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:760px;margin:auto;padding:18px 14px 42px}.hero{padding:15px 4px 18px}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#aab6ff;font-weight:800}.hero h1{font-size:30px;line-height:1.08;margin:8px 0}.hero p,.muted{color:var(--muted);line-height:1.5}.muted{font-size:13px}.card{background:rgba(21,29,49,.96);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 12px 35px #0002}label{display:block;font-size:13px;font-weight:700;color:#dce3f5;margin:12px 0 7px}input,textarea,select{width:100%;border:1px solid #394766;border-radius:11px;background:#0d1425;color:var(--text);font:inherit;padding:12px;outline:none}textarea{min-height:110px;line-height:1.5}button{border:0;border-radius:11px;padding:12px 14px;font:700 14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;text-align:center;display:inline-flex;justify-content:center;align-items:center;gap:7px}button:disabled{opacity:.55}.primary{background:var(--accent);color:#10162a;width:100%;margin-top:10px}.secondary{background:#263451;color:#f3f5ff}.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.row>*{flex:1;min-width:120px}.status{padding:11px;border-radius:11px;background:#0d1425;border:1px solid var(--line);font-size:13px;line-height:1.5;margin-top:11px;overflow-wrap:anywhere}.warn{border-color:#80652e}.ok{border-color:#2d7965}.split{display:flex;justify-content:space-between;align-items:center;gap:10px}.pill{padding:5px 8px;background:#263451;border-radius:999px;color:#d9e0ff;font-size:12px;white-space:nowrap}h2{font-size:18px;margin:0 0 8px}.foot{font-size:12px;color:#7f8ba5;text-align:center;margin-top:22px}.notice{border-left:3px solid #8b9cff;padding:9px 11px;background:#10182b;border-radius:6px;font-size:13px;line-height:1.5;color:#cbd5ee}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:480px){.grid{grid-template-columns:1fr}.hero h1{font-size:27px}}
-</style></head><body><main>
-<header class="hero"><div class="eyebrow">Free tool · iPhone friendly · No API</div><h1>Amazon → eBay<br>Listing Assistant</h1><p>Paste an Amazon.it product link, confirm the details, and create an Italian eBay title and description.</p></header>
-<section class="card"><h2>1 · Amazon product</h2><label for="url">Amazon product URL</label><input id="url" type="url" placeholder="Paste any Amazon.it product link here" autocomplete="url"><div class="row"><button class="secondary" id="analyze" type="button">Read link</button><button class="secondary" id="openAmazon" type="button">Open Amazon</button></div><div id="status" class="status warn">Paste a product link, then tap “Read link”. The app recognizes standard Amazon product URL formats and extracts the product name from the link when possible.</div>
-<div class="grid"><div><label for="brand">Brand (confirm/edit)</label><input id="brand" placeholder="Brand name"></div><div><label for="productName">Product name (confirm/edit)</label><input id="productName" placeholder="Exact product name"></div><div><label for="size">Size / quantity</label><input id="size" placeholder="e.g. 500 ml, 2 pieces"></div><div><label for="condition">Condition</label><select id="condition"><option value="New">New</option><option value="Used">Used</option><option value="To be verified" selected>To be verified</option></select></div></div>
-<label for="features">Verified features / specifications</label><textarea id="features" placeholder="Enter only details verified on the Amazon page or product packaging"></textarea><label for="keywords">Relevant Italian keywords (optional)</label><input id="keywords" placeholder="e.g. accessorio cucina, ricambio originale"><button class="primary" id="generate" type="button">Generate Italian eBay listing</button></section>
-<section class="card"><div class="split"><h2>2 · eBay.it title</h2><span class="pill" id="count">0/80</span></div><label for="title">Title (maximum 80 characters)</label><textarea id="title" maxlength="80" placeholder="Your SEO title will appear here"></textarea><div class="row"><button class="secondary" data-copy="title" type="button">Copy title</button><button class="secondary" id="regen" type="button">Rebuild title</button></div></section>
-<section class="card"><h2>3 · eBay.it description</h2><label for="description">Italian description</label><textarea id="description" style="min-height:260px" placeholder="Your Italian description will appear here"></textarea><button class="primary" data-copy="description" type="button">Copy description</button><div class="notice" style="margin-top:12px">Important: this no-API version cannot reliably read Amazon page contents automatically because Amazon blocks browser-based cross-site access. It parses different link formats and uses the URL's product slug as a starting point. Confirm brand, specifications, quantity, condition and all claims before listing. It does not publish directly to eBay.</div></section>
-<p class="foot">Text-only version · No image tools · No API key · Not connected to eBay</p></main>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2b;--line:#29364c;--text:#eef3fb;--muted:#a7b3c7;--accent:#7c9cff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#101a30,#080c16 70%);color:var(--text);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+main{max-width:760px;margin:auto;padding:24px 16px 40px}.brand{display:flex;align-items:center;gap:12px;margin:12px 0 28px}.logo{width:46px;height:46px;border-radius:14px;background:#24365d;display:grid;place-items:center;font-weight:800;color:#dbe5ff;font-size:19px}.brand small{display:block;color:var(--muted)}h1{font-size:clamp(26px,6vw,38px);line-height:1.12;margin:0 0 10px}p{color:var(--muted);margin:0 0 22px}.card{background:rgba(18,26,43,.96);border:1px solid var(--line);border-radius:20px;padding:20px;margin:18px 0}.label{display:block;font-weight:700;margin:0 0 9px}input{width:100%;background:#080e1a;border:1px solid #394761;border-radius:12px;padding:15px 13px;color:var(--text);font-size:16px;outline:none}input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #7c9cff22}.btn{width:100%;border:0;border-radius:12px;background:#8ca8ff;color:#081020;font-weight:800;font-size:16px;padding:15px;margin-top:12px;cursor:pointer}.btn.secondary{background:#202c42;color:var(--text);border:1px solid var(--line)}.note{font-size:13px;color:var(--muted);margin:12px 0 0}.steps{display:grid;gap:14px}.step{display:flex;gap:12px}.num{flex:0 0 30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#26385e;color:#dbe5ff;font-weight:800}.step strong{display:block;margin-bottom:3px}.step span{color:var(--muted);font-size:14px}.footer{color:#8290a7;font-size:12px;text-align:center;margin-top:28px}a{color:#b8caff}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand"><div class="logo">S</div><div><strong>Sincho HTML Inspector</strong><small>Mobil uyumlu kaynak kodu görüntüleyici</small></div></div>
+  <h1>Bir URL gir, HTML kaynağını aç.</h1>
+  <p>Site adresini yapıştır. Araç, ham HTML kaynağını görüntüleyen çevrim içi görüntüleyicide açar. Kurulum gerekmez.</p>
+  <section class="card">
+    <label class="label" for="url">İncelenecek web sitesi</label>
+    <input id="url" type="url" autocomplete="url" autocapitalize="off" spellcheck="false" value="https://www.bodyworld.eu/it/it/prom-in-cfm-pure-performance-2250-g-6736" placeholder="https://ornek.com/urun">
+    <button class="btn" id="open">HTML KODUNU GÖSTER</button>
+    <button class="btn secondary" id="copy">URL'Yİ KOPYALA</button>
+    <p class="note" id="msg">Yalnızca herkese açık sayfalar. Kaynak görüntüleyici bot koruması olan siteleri yine de okuyamayabilir.</p>
+  </section>
+  <section class="card">
+    <div class="steps">
+      <div class="step"><div class="num">1</div><div><strong>Ürün veya kategori URL'sini yapıştır</strong><span>BodyWorld ana sayfası, kategori veya ürün bağlantısı olabilir.</span></div></div>
+      <div class="step"><div class="num">2</div><div><strong>HTML kaynağını aç</strong><span>Yeni sayfada kaynak kodu, satır numaraları ve arama araçları sunulur.</span></div></div>
+      <div class="step"><div class="num">3</div><div><strong>İlgili kodu ara</strong><span>Sayfa içi aramada product, price, image, srcset, schema.org veya ürün adını ara. Sonra kodu kopyalayıp ChatGPT'ye gönder.</span></div></div>
+    </div>
+  </section>
+  <p class="note">Not: Ham HTML, JavaScript çalıştıktan sonra oluşan canlı DOM ile aynı olmayabilir. Görsel sınıflarını ve ürün verilerini çıkarmak için bu ilk inceleme adımıdır.</p>
+  <div class="footer">Sincho Dropship yardımcı aracı · Ürün yayımlamaz ve veri uydurmaz.</div>
+</main>
 <script>
-const $=id=>document.getElementById(id);const clean=s=>(s||'').replace(/[\s_-]+/g,' ').replace(/\s+/g,' ').trim();
-function parseAmazon(raw){try{const u=new URL(raw.trim());if(!/^https?:$/.test(u.protocol)||!/(^|\.)amazon\.[a-z.]+$/i.test(u.hostname))return {error:'Please enter a valid Amazon product URL (for example Amazon.it).'};const path=decodeURIComponent(u.pathname);let m=path.match(/\/(?:dp|gp\/product|product|gp\/aw\/d)\/([A-Z0-9]{10})(?:[/?]|$)/i);let asin=m?m[1].toUpperCase():'';let slug='';if(asin){const before=path.slice(0,path.toUpperCase().indexOf('/'+(path.match(/\/(?:dp|gp\/product|product|gp\/aw\/d)\//i)||[''])[0].replace(/^\//,'')));slug=before.replace(/^\//,'').replace(/\/$/,'').split('/').pop()||'';}if(!slug){const seg=path.split('/').filter(Boolean);slug=seg.find(x=>!/^dp$|^gp$|^product$|^[A-Z0-9]{10}$/i.test(x))||'';}slug=slug.replace(/\.html?$/i,'').replace(/\bB0[A-Z0-9]{8}\b/gi,'').replace(/\b[A-Z0-9]{10}\b/g,'');slug=clean(slug.replace(/\+/g,' ')).replace(/\b\d{10,}\b/g,'').trim();return {url:u.href,host:u.hostname,asin,slug};}catch{return {error:'That link does not look like a valid URL. Copy the full product URL from Amazon and try again.'}}}
-function updateCount(){$('count').textContent=$('title').value.length+'/80'}
-function buildTitle(){const parts=[$('productName').value,$('brand').value,$('size').value,$('features').value,$('keywords').value].map(clean).filter(Boolean);let out='';for(const p of parts){const candidate=out?out+' '+p:p;if(candidate.length<=80)out=candidate}return out.slice(0,80)}
-function buildDescription(){const name=clean($('productName').value)||'Prodotto da identificare';const brand=clean($('brand').value);const size=clean($('size').value);const features=clean($('features').value);const kw=clean($('keywords').value);const cond=$('condition').value;let lines=[name+(brand?' – marca '+brand:''),'','DETTAGLI DEL PRODOTTO',size?'Formato/quantità: '+size:'Formato/quantità: da verificare',features?'Caratteristiche: '+features:'Caratteristiche: verificare sulla pagina del produttore o sulla confezione',kw?'Parole chiave: '+kw:'','CONDIZIONE',cond==='New'?'Nuovo — pubblicare come nuovo solo se il prodotto è effettivamente nuovo e conforme alle regole eBay.':cond==='Used'?'Usato — descrivere con precisione condizioni, eventuali segni e contenuto della confezione.':'Da confermare prima della pubblicazione.','','CONTENUTO DELLA CONFEZIONE','Specificare il contenuto e la quantità esatti prima della pubblicazione.','','Verificare tutte le informazioni con il prodotto effettivamente venduto. Non inserire promesse o caratteristiche non confermate.'];return lines.join('\n')}
-$('analyze').onclick=()=>{const r=parseAmazon($('url').value);if(r.error){$('status').textContent=r.error;$('status').className='status warn';return}if(r.slug){$('productName').value=r.slug.split('/').pop().replace(/\b\w/g,c=>c.toUpperCase());}else if(!$('productName').value.trim()){$('productName').value='Prodotto Amazon da identificare'}$('status').className='status ok';$('status').textContent='Domain recognized: '+r.host+(r.asin?' · ASIN: '+r.asin:' · ASIN not detected')+'. '+(r.slug?'A name was extracted from the URL; check it against the Amazon page.':'This URL has no readable product name, so enter it manually.')+' Amazon details have not been scraped.';if(!$('title').value.trim())$('title').value=buildTitle();updateCount()};
-$('openAmazon').onclick=()=>{const r=parseAmazon($('url').value);if(r.error){$('status').textContent=r.error;return}window.open(r.url,'_blank','noopener,noreferrer')};
-$('generate').onclick=()=>{const r=parseAmazon($('url').value);if(r.error){$('status').textContent=r.error;$('status').className='status warn';return}if(!$('productName').value.trim()&&r.slug)$('productName').value=r.slug.split('/').pop().replace(/\b\w/g,c=>c.toUpperCase());$('title').value=buildTitle();$('description').value=buildDescription();updateCount();$('status').className='status ok';$('status').textContent='Draft generated from the product details entered and the readable part of the URL. Amazon page data was not automatically imported; verify every detail.'};
-$('regen').onclick=()=>{$('title').value=buildTitle();updateCount()};$('title').addEventListener('input',updateCount);
-document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{const el=$(b.dataset.copy);if(!el.value.trim()){b.textContent='Nothing to copy';setTimeout(()=>b.textContent=b.dataset.copy==='title'?'Copy title':'Copy description',1300);return}try{await navigator.clipboard.writeText(el.value);const old=b.textContent;b.textContent='Copied ✓';setTimeout(()=>b.textContent=old,1200)}catch{el.focus();el.select();try{document.execCommand('copy');b.textContent='Copied ✓'}catch{b.textContent='Select and copy'}setTimeout(()=>b.textContent=b.dataset.copy==='title'?'Copy title':'Copy description',1400)}});
-</script></body></html>
+const urlInput=document.getElementById('url');
+const msg=document.getElementById('msg');
+function normalized(){
+  let raw=urlInput.value.trim();
+  if(!raw) throw new Error('Lütfen bir web sitesi adresi gir.');
+  if(!/^https?:\/\//i.test(raw)) raw='https://'+raw;
+  const u=new URL(raw);
+  if(!['http:','https:'].includes(u.protocol)) throw new Error('Yalnızca http veya https adresleri desteklenir.');
+  return u.href;
+}
+document.getElementById('open').addEventListener('click',()=>{
+  try{
+    const target='https://viewsource.net/?url='+encodeURIComponent(normalized());
+    window.location.href=target;
+  }catch(e){msg.textContent=e.message;}
+});
+document.getElementById('copy').addEventListener('click',async()=>{
+  try{
+    const value=normalized();
+    await navigator.clipboard.writeText(value);
+    msg.textContent='URL kopyalandı.';
+  }catch(e){msg.textContent=e.message||'Kopyalama desteklenmiyor; adresi elle seçip kopyala.';}
+});
+</script>
+</body>
+</html>
